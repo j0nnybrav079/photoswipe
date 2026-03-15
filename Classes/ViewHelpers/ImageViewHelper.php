@@ -3,10 +3,8 @@
 namespace Tei\PhotoSwipe\ViewHelpers;
 
 use Tei\PhotoSwipe\Service\ImageService64;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
-use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Extbase\Service\ImageService;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Exception;
@@ -25,30 +23,26 @@ class ImageViewHelper extends AbstractTagBasedViewHelper
     /** @var ImageService64 */
     protected $imageService64;
 
-
     /**
      * @param ImageService $imageService
      */
-    public function injectImageService(ImageService $imageService)
+    public function injectImageService(ImageService $imageService): void
     {
         $this->imageService = $imageService;
     }
 
-
     /**
      * @param ImageService64 $imageService64
-     * @return void
      */
-    public function injectImageService64(ImageService64 $imageService64)
+    public function injectImageService64(ImageService64 $imageService64): void
     {
         $this->imageService64 = $imageService64;
     }
 
-
     /**
      * Initialize arguments.
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerUniversalTagAttributes();
@@ -66,8 +60,8 @@ class ImageViewHelper extends AbstractTagBasedViewHelper
         $this->registerArgument('cropVariant', 'string', 'select a cropping variant, in case multiple croppings have been specified or stored in FileReference', false, 'default');
         $this->registerArgument('fileExtension', 'string', 'Custom file extension to use');
 
-        $this->registerArgument('width', 'string', 'width of the image. This can be a numeric value representing the fixed width of the image in pixels. But you can also perform simple calculations by adding "m" or "c" to the value. See imgResource.width for possible options.');
-        $this->registerArgument('height', 'string', 'height of the image. This can be a numeric value representing the fixed height of the image in pixels. But you can also perform simple calculations by adding "m" or "c" to the value. See imgResource.width for possible options.');
+        $this->registerArgument('width', 'string', 'width of the image.');
+        $this->registerArgument('height', 'string', 'height of the image.');
         $this->registerArgument('minWidth', 'int', 'minimum width of the image');
         $this->registerArgument('minHeight', 'int', 'minimum height of the image');
         $this->registerArgument('maxWidth', 'int', 'maximum width of the image');
@@ -75,23 +69,19 @@ class ImageViewHelper extends AbstractTagBasedViewHelper
         $this->registerArgument('absolute', 'bool', 'Force absolute URL', false, false);
     }
 
-
     /**
      * Resizes a given image (if required) and renders the respective img tag
-     *
-     * @see https://docs.typo3.org/typo3cms/TyposcriptReference/ContentObjects/Image/
      *
      * @throws Exception
      * @return string Rendered tag
      */
-    public function render()
+    public function render(): string
     {
-        $src = (string)$this->arguments['src'];
+        $src = (string)($this->arguments['src'] ?? '');
         if (($src === '' && $this->arguments['image'] === null) || ($src !== '' && $this->arguments['image'] !== null)) {
             throw new Exception('You must either specify a string src or a File object.', 1382284106);
         }
 
-        // A URL was given as src, this is kept as is, and we can only scale
         if ($src !== '' && preg_match('/^(https?:)?\/\//', $src)) {
             $this->tag->addAttribute('src', $src);
             if (isset($this->arguments['width'])) {
@@ -131,7 +121,7 @@ class ImageViewHelper extends AbstractTagBasedViewHelper
                         $this->tag->addAttribute('data-focus-area', $focusArea->makeAbsoluteBasedOnFile($image));
                     }
                 }
-                if (isset($this->arguments['lazy64']) && $this->arguments['lazy64'] === 1) {
+                if (isset($this->arguments['lazy64']) && (int)$this->arguments['lazy64'] === 1) {
                     $this->tag->addAttribute('src', $this->imageService64->getBase64Preview($processedImage));
                     $this->tag->addAttribute('data-src', $imageUri);
                     $cssClass = $this->arguments['class'] ? 'lazy64 ' . $this->arguments['class'] : 'lazy64';
@@ -142,7 +132,6 @@ class ImageViewHelper extends AbstractTagBasedViewHelper
                 $this->tag->addAttribute('width', $processedImage->getProperty('width'));
                 $this->tag->addAttribute('height', $processedImage->getProperty('height'));
 
-                // The alt-attribute is mandatory to have valid html-code, therefore add it even if it is empty
                 if (empty($this->arguments['alt'])) {
                     $this->tag->addAttribute('alt', $image->hasProperty('alternative') ? $image->getProperty('alternative') : '');
                 }
@@ -151,19 +140,11 @@ class ImageViewHelper extends AbstractTagBasedViewHelper
                     $this->tag->addAttribute('title', $title);
                 }
             } catch (ResourceDoesNotExistException $e) {
-                // thrown if file does not exist
                 throw new Exception($e->getMessage(), 1509741911, $e);
-            } catch (\UnexpectedValueException $e) {
-                // thrown if a file has been replaced with a folder
+            } catch (\Exception $e) {
                 throw new Exception($e->getMessage(), 1509741912, $e);
-            } catch (\RuntimeException $e) {
-                // RuntimeException thrown if a file is outside of a storage
-                throw new Exception($e->getMessage(), 1509741913, $e);
-            } catch (\InvalidArgumentException $e) {
-                // thrown if file storage does not exist
-                throw new Exception($e->getMessage(), 1509741914, $e);
             }
         }
-        return $this->tag->render();
+        return (string)$this->tag->render();
     }
 }
