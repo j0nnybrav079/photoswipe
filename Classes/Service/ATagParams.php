@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tei\PhotoSwipe\Service;
 
+use TYPO3\CMS\Core\Attribute\AsAllowedCallable;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\Area;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Service\ImageService;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-
 
 final class ATagParams
 {
@@ -20,14 +20,18 @@ final class ATagParams
         $this->cObj = $cObj;
     }
 
+    #[AsAllowedCallable]
     public function set(string $content, array $conf): string
     {
         $file = $this->cObj->getCurrentFile();
 
+        if (!$file) {
+            return '';
+        }
+
         ['width' => $width, 'height' => $height] = $this->getFileProperties($file);
 
         // fallback to original file if dimensions are still null for unknown reason
-        // see https://github.com/j0nnybrav079/photoswipe/issues/10
         if (((int)$width === 0) || ((int)$height === 0)) {
             ['width' => $width, 'height' => $height] = $file->getOriginalFile()->getProperties();
         }
@@ -41,14 +45,12 @@ final class ATagParams
 
     private function getFileProperties($file): array
     {
-        $crop = $file->getReferenceProperties()['crop'];
+        $crop = $file->getReferenceProperties()['crop'] ?? null;
 
         if ($crop === null) {
-            // No crop applied, so just return properties of original file.
             return $file->getProperties();
         }
 
-        // File (reference) is cropped.
         $cropArea = CropVariantCollection::create($crop)->getCropArea('default');
 
         return $cropArea->isEmpty() ? $file->getProperties() : $this->getCroppedFileProperties($file, $cropArea);
