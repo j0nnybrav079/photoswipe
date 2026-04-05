@@ -45,7 +45,15 @@ class ImageViewHelper extends AbstractTagBasedViewHelper
     public function initializeArguments(): void
     {
         parent::initializeArguments();
-        $this->registerUniversalTagAttributes();
+        // registerUniversalTagAttributes() was removed in typo3fluid/fluid 5.x (TYPO3 v14)
+        $this->registerTagAttribute('class', 'string', 'CSS class(es) for this element');
+        $this->registerTagAttribute('id', 'string', 'Unique (in this file) identifier for this HTML element');
+        $this->registerTagAttribute('lang', 'string', 'Language for this element');
+        $this->registerTagAttribute('style', 'string', 'Individual CSS styles for this element');
+        $this->registerTagAttribute('title', 'string', 'Tooltip text of element');
+        $this->registerTagAttribute('accesskey', 'string', 'Keyboard shortcut to access this element');
+        $this->registerTagAttribute('tabindex', 'integer', 'Specifies the tab order of this element');
+        $this->registerTagAttribute('onclick', 'string', 'JavaScript evaluated for the onclick event');
         $this->registerTagAttribute('alt', 'string', 'Specifies an alternate text for an image', false);
         $this->registerTagAttribute('ismap', 'string', 'Specifies an image as a server-side image-map. Rarely used. Look at usemap instead', false);
         $this->registerTagAttribute('longdesc', 'string', 'Specifies the URL to a document that contains a long description of an image', false);
