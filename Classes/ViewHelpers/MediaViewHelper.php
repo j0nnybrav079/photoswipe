@@ -65,16 +65,10 @@ final class MediaViewHelper extends AbstractTagBasedViewHelper
     public function initializeArguments(): void
     {
         parent::initializeArguments();
-        // registerUniversalTagAttributes() was removed in typo3fluid/fluid 5.x (TYPO3 v14)
-        $this->registerTagAttribute('class', 'string', 'CSS class(es) for this element');
-        $this->registerTagAttribute('id', 'string', 'Unique (in this file) identifier for this HTML element');
-        $this->registerTagAttribute('lang', 'string', 'Language for this element');
-        $this->registerTagAttribute('style', 'string', 'Individual CSS styles for this element');
-        $this->registerTagAttribute('title', 'string', 'Tooltip text of element');
-        $this->registerTagAttribute('accesskey', 'string', 'Keyboard shortcut to access this element');
-        $this->registerTagAttribute('tabindex', 'integer', 'Specifies the tab order of this element');
-        $this->registerTagAttribute('onclick', 'string', 'JavaScript evaluated for the onclick event');
-        $this->registerTagAttribute('alt', 'string', 'Specifies an alternate text for an image', false);
+        // Note: registerTagAttribute() and registerUniversalTagAttributes() were removed
+        // in typo3fluid/fluid 5.x (TYPO3 v14). HTML attributes like class, id, style etc.
+        // are passed automatically via additionalAttributes or as tag attributes by the framework.
+        $this->registerArgument('alt', 'string', 'Specifies an alternate text for an image', false);
         $this->registerArgument('file', 'object', 'File', true);
         $this->registerArgument('additionalConfig', 'array', 'This array can hold additional configuration that is passed though to the Renderer object', false, []);
         $this->registerArgument('width', 'string', 'This can be a numeric value representing the fixed width of in pixels. But you can also perform simple calculations by adding "m" or "c" to the value. See imgResource.width for possible options.');

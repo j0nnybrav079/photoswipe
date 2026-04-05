@@ -45,20 +45,14 @@ class ImageViewHelper extends AbstractTagBasedViewHelper
     public function initializeArguments(): void
     {
         parent::initializeArguments();
-        // registerUniversalTagAttributes() was removed in typo3fluid/fluid 5.x (TYPO3 v14)
-        $this->registerTagAttribute('class', 'string', 'CSS class(es) for this element');
-        $this->registerTagAttribute('id', 'string', 'Unique (in this file) identifier for this HTML element');
-        $this->registerTagAttribute('lang', 'string', 'Language for this element');
-        $this->registerTagAttribute('style', 'string', 'Individual CSS styles for this element');
-        $this->registerTagAttribute('title', 'string', 'Tooltip text of element');
-        $this->registerTagAttribute('accesskey', 'string', 'Keyboard shortcut to access this element');
-        $this->registerTagAttribute('tabindex', 'integer', 'Specifies the tab order of this element');
-        $this->registerTagAttribute('onclick', 'string', 'JavaScript evaluated for the onclick event');
-        $this->registerTagAttribute('alt', 'string', 'Specifies an alternate text for an image', false);
-        $this->registerTagAttribute('ismap', 'string', 'Specifies an image as a server-side image-map. Rarely used. Look at usemap instead', false);
-        $this->registerTagAttribute('longdesc', 'string', 'Specifies the URL to a document that contains a long description of an image', false);
-        $this->registerTagAttribute('usemap', 'string', 'Specifies an image as a client-side image-map', false);
-        $this->registerTagAttribute('loading', 'string', 'Native lazy-loading for images property. Can be "lazy", "eager" or "auto"', false);
+        // Note: registerTagAttribute() and registerUniversalTagAttributes() were removed
+        // in typo3fluid/fluid 5.x (TYPO3 v14). HTML attributes like class, id, style etc.
+        // are passed automatically via additionalAttributes or as tag attributes by the framework.
+        $this->registerArgument('alt', 'string', 'Specifies an alternate text for an image', false);
+        $this->registerArgument('ismap', 'string', 'Specifies an image as a server-side image-map. Rarely used. Look at usemap instead', false);
+        $this->registerArgument('longdesc', 'string', 'Specifies the URL to a document that contains a long description of an image', false);
+        $this->registerArgument('usemap', 'string', 'Specifies an image as a client-side image-map', false);
+        $this->registerArgument('loading', 'string', 'Native lazy-loading for images property. Can be "lazy", "eager" or "auto"', false);
 
         $this->registerArgument('lazy64', 'string', 'Base64 based lazy-loading  for images property. Can be "0", or "1". Used on image files only.');
         $this->registerArgument('src', 'string', 'a path to a file, a combined FAL identifier or an uid (int). If $treatIdAsReference is set, the integer is considered the uid of the sys_file_reference record. If you already got a FAL object, consider using the $image parameter instead', false, '');
