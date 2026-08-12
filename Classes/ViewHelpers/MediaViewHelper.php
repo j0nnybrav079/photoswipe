@@ -160,11 +160,18 @@ final class MediaViewHelper extends AbstractTagBasedViewHelper
             }
         }
 
-        if (isset($this->arguments['lazy64']) && $this->arguments['lazy64'] === 1) {
+        // Fluid passes the argument as a string ("1"), so the former strict
+        // comparison against the integer 1 was never true - lazy64 never worked here.
+        if ((int)($this->arguments['lazy64'] ?? 0) === 1) {
             $this->tag->addAttribute('src', $this->getImageService64()->getBase64Preview($processedImage));
             $this->tag->addAttribute('data-src', $imageUri);
-            $cssClass = $this->arguments['class'] ? 'lazy64 ' . $this->arguments['class'] : 'lazy64';
-            $this->tag->addAttribute('class', $cssClass);
+            // "class" is no longer a registered argument since Fluid 5, it arrives
+            // on the tag directly via additionalAttributes.
+            $existingClass = (string)($this->tag->getAttribute('class') ?? '');
+            $this->tag->addAttribute(
+                'class',
+                $existingClass !== '' ? 'lazy64 ' . $existingClass : 'lazy64'
+            );
         } else {
             $this->tag->addAttribute('src', $imageUri);
         }
@@ -186,7 +193,9 @@ final class MediaViewHelper extends AbstractTagBasedViewHelper
         if (empty($this->arguments['alt'])) {
             $this->tag->addAttribute('alt', $alt);
         }
-        if (empty($this->arguments['title']) && !empty($title)) {
+        // "title" is no longer a registered argument since Fluid 5 - it may already
+        // be set on the tag, otherwise it comes from the file metadata.
+        if (!empty($title) && (string)($this->tag->getAttribute('title') ?? '') === '') {
             $this->tag->addAttribute('title', $title);
         }
 

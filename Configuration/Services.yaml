@@ -7,13 +7,26 @@ services:
   Tei\PhotoSwipe\:
     resource: '../Classes/*'
     exclude: '../Classes/Domain/Model/*'
-    
+
+  # The backend resolves the link browser handler via makeInstance().
   Tei\PhotoSwipe\LinkHandler\PhotoSwipeLinkHandler:
     shared: false
+    public: true
+
+  # Since TYPO3 14 the LinkFactory instantiates registered typolinkBuilders via
+  # GeneralUtility::makeInstance() WITHOUT arguments. As PageLinkBuilder receives
+  # its 14 dependencies through constructor injection, the service has to be
+  # public - otherwise every page fails with an ArgumentCountError.
+  Tei\PhotoSwipe\LinkHandler\PhotoSwipeLinkBuilder:
+    shared: false
+    public: true
+
+  # Fetched from the view helpers via GeneralUtility::makeInstance() and has
+  # constructor dependencies, so it needs to be public as well.
+  Tei\PhotoSwipe\Service\ImageService64:
     public: true
 
   Tei\PhotoSwipe\Backend\EventListener\LinkEventListener:
     tags:
       - name: event.listener
         identifier: 'photoswipe/backend/modify-link-explanation'
-

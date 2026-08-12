@@ -123,11 +123,18 @@ class ImageViewHelper extends AbstractTagBasedViewHelper
                         $this->tag->addAttribute('data-focus-area', $focusArea->makeAbsoluteBasedOnFile($image));
                     }
                 }
-                if (isset($this->arguments['lazy64']) && (int)$this->arguments['lazy64'] === 1) {
+                // Fluid passes the argument as a string ("1"), so it has to be cast
+                // before comparing - see MediaViewHelper for the same guard.
+                if ((int)($this->arguments['lazy64'] ?? 0) === 1) {
                     $this->tag->addAttribute('src', $this->imageService64->getBase64Preview($processedImage));
                     $this->tag->addAttribute('data-src', $imageUri);
-                    $cssClass = $this->arguments['class'] ? 'lazy64 ' . $this->arguments['class'] : 'lazy64';
-                    $this->tag->addAttribute('class', $cssClass);
+                    // "class" is no longer a registered argument since Fluid 5, it
+                    // arrives on the tag directly via additionalAttributes.
+                    $existingClass = (string)($this->tag->getAttribute('class') ?? '');
+                    $this->tag->addAttribute(
+                        'class',
+                        $existingClass !== '' ? 'lazy64 ' . $existingClass : 'lazy64'
+                    );
                 } else {
                     $this->tag->addAttribute('src', $imageUri);
                 }
@@ -137,8 +144,10 @@ class ImageViewHelper extends AbstractTagBasedViewHelper
                 if (empty($this->arguments['alt'])) {
                     $this->tag->addAttribute('alt', $image->hasProperty('alternative') ? $image->getProperty('alternative') : '');
                 }
-                $title = $image->hasProperty('title') ? $image->getProperty('title') : '';
-                if (empty($this->arguments['title']) && $title !== '') {
+                // "title" is no longer a registered argument since Fluid 5 - it may
+                // already be set on the tag, otherwise it comes from the file metadata.
+                $title = $image->hasProperty('title') ? (string)$image->getProperty('title') : '';
+                if ($title !== '' && (string)($this->tag->getAttribute('title') ?? '') === '') {
                     $this->tag->addAttribute('title', $title);
                 }
             } catch (ResourceDoesNotExistException $e) {

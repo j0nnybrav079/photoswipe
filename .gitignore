@@ -1,1 +1,14 @@
-/.idea/
+# Composer / test environment
+.Build/
+composer.lock
+.phpunit.cache/
+
+# Node artifacts
+node_modules/
+
+# JetBrains IDE
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

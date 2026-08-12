@@ -3,15 +3,19 @@
   "type": "typo3-cms-extension",
   "description": "TYPO3 PhotoSwipe-Plugin for native image-enlargement",
   "license": "GPL-2.0-or-later",
-  "version": "2.0.15",
+  "version": "3.0.0",
   "require": {
-    "php": "^8.1 || ^8.2 || ^8.3 || ^8.4",
-    "typo3/cms-backend": "^14.1",
-    "typo3/cms-core": "^14.1"
+    "php": "^8.2 || ^8.3 || ^8.4 || ^8.5",
+    "typo3/cms-backend": "^14.3",
+    "typo3/cms-core": "^14.3",
+    "typo3/cms-frontend": "^14.3"
+  },
+  "require-dev": {
+    "typo3/testing-framework": "^9.6"
   },
   "authors": [
     {
-      "name": "Tobias Eichelbegrer",
+      "name": "Tobias Eichelberger",
       "role": "Developer"
     },
     {
@@ -32,7 +36,8 @@
   },
   "extra": {
     "typo3/cms": {
-      "extension-key": "photoswipe"
+      "extension-key": "photoswipe",
+      "web-dir": ".Build/public"
     }
   },
   "replace": {
@@ -42,5 +47,23 @@
     "psr-4": {
       "Tei\\PhotoSwipe\\": "Classes"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tei\\PhotoSwipe\\Tests\\": "Tests"
+    }
+  },
+  "config": {
+    "vendor-dir": ".Build/vendor",
+    "bin-dir": ".Build/bin",
+    "allow-plugins": {
+      "typo3/class-alias-loader": true,
+      "typo3/cms-composer-installers": true
+    }
+  },
+  "scripts": {
+    "test:functional": [
+      "Build/runFunctionalTests.sh"
+    ]
   }
 }

@@ -1,4 +1,9 @@
 <?php
+
+declare(strict_types=1);
+
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 defined('TYPO3') || die();
 
 $ttContentColumns = [
@@ -8,15 +13,17 @@ $ttContentColumns = [
         'config' => [
             'type' => 'check',
             'renderType' => 'checkboxToggle',
+            // Associative keys since TYPO3 12. The numeric format is no longer
+            // migrated automatically in v14.
             'items' => [
                 [
-                    0 => '',
-                    1 => '',
-                ]
+                    'label' => '',
+                    'value' => '',
+                ],
             ],
-        ]
+        ],
     ],
 ];
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('tt_content', $ttContentColumns);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette('tt_content', 'imagelinks', 'imagelazy64');
+ExtensionManagementUtility::addTCAcolumns('tt_content', $ttContentColumns);
+ExtensionManagementUtility::addFieldsToPalette('tt_content', 'imagelinks', 'imagelazy64');
