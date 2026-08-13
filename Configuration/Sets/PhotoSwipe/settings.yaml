@@ -1,0 +1,4 @@
+# Ueberschreibt den Default des Sets typo3/fluid-styled-content.
+# Lag frueher als Konstante "styles.content.textmedia.linkWrap.lightboxEnabled = 1"
+# in Configuration/TypoScript/constants.typoscript.
+styles.content.textmedia.linkWrap.lightboxEnabled: true
