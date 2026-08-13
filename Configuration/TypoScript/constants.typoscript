@@ -1,22 +1,18 @@
-# customsubcategory=config=Configuration
 plugin.tx_photoswipe {
 
     view {
-        # cat=plugin.tx_photoswipe/file; type=string; label=Path to template layouts (FE)
         layoutRootPath = EXT:photoswipe/Resources/Private/Layouts/
-        # cat=plugin.tx_photoswipe/file; type=string; label=Path to template root (FE)
         templateRootPath = EXT:photoswipe/Resources/Private/Templates/
     }
 
     settings {
-        # cat=plugin.tx_photoswipe/config; type=string; label=PhotoSwipe allowed image extensions (comma separated)
         imageExtensions = jpg,jpeg,png,bmp
-        # cat=plugin.tx_photoswipe/config; type=int[1-500]; label=Svg width in px
-        svgWidth= 10
+        svgWidth = 10
     }
 
 }
 
-styles.content.textmedia.linkWrap {
-    lightboxEnabled = 1
-}
+# "styles.content.textmedia.linkWrap.lightboxEnabled = 1" liegt seit dem
+# Umstieg auf Site Sets in Configuration/Sets/PhotoSwipe/settings.yaml -
+# der Wert ist ein Setting des Sets typo3/fluid-styled-content und laesst
+# sich dort sauber ueberschreiben.
