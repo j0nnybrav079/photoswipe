@@ -477,6 +477,34 @@ div.pswp__img--placeholder,
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+
+    /* long content must be scrollable inside the layer.
+       .pswp sets `touch-action: none`, which prevents any native
+       scrolling - it has to be re-enabled here. */
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.35) transparent;
+}
+
+.pswp__html-container div.wrapper::-webkit-scrollbar {
+    width: 10px;
+}
+
+.pswp__html-container div.wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.pswp__html-container div.wrapper::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 5px;
+}
+
+.pswp__html-container div.wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.55);
 }
 
 .pswp__html-container .wrapper {
